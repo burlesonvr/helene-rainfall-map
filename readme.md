@@ -36,8 +36,7 @@ rainfall total.
 
 ## Design
 
-The map was created with Leaflet and uses the CartoDB
-Positron basemap from the Leaflet Providers Demo.
+The map was created with Leaflet and OpenStreetMap basemap from the Leaflet Providers Demo.
 
 Blue circles represent rainfall observations, with
 orange highlighting when the user hovers over a location.
