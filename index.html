@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hurricane Helene Rainfall in Western NC</title>
+
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f0;
+      color: #263b38;
+    }
+
+    header {
+      padding: 22px 30px;
+      background: #254b47;
+      color: white;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 27px;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 14px;
+      color: #e0ebe8;
+    }
+
+    #map {
+      width: 100%;
+      height: 65vh;
+      min-height: 400px;
+    }
+
+    .legend {
+      background: white;
+      padding: 12px 16px;
+      border-radius: 6px;
+      box-shadow: 0 1px 8px #8888;
+      line-height: 1.8;
+      font-size: 13px;
+    }
+
+    .legend-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 5px 0;
+    }
+
+    .legend-circle {
+      display: inline-block;
+      border-radius: 50%;
+      background: #287c98aa;
+      border: 1px solid #16546c;
+      flex-shrink: 0;
+    }
+
+    .info {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px 25px;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    a { color: #176a80; }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Hurricane Helene: Rainfall in Western North Carolina</h1>
+    <p>September 25-27, 2024 | Interactive Proportional Symbol Map</p>
+  </header>
+
+  <div id="map"></div>
+
+  <section class="info">
+    <h2>About This Map</h2>
+    <p>
+      Hurricane Helene brought extreme rainfall and devastating
+      flooding to western North Carolina in September 2024.
+      This map compares reported three-day rainfall totals
+      at selected locations across the mountain region.
+      Larger circles represent greater rainfall amounts.
+      Click a circle to view the reported total.
+    </p>
+
+    <p>
+      <strong>Data source:</strong>
+      <a href="https://climate.ncsu.edu/blog/2024/09/rapid-reaction-historic-flooding-follows-helene-in-western-nc/"
+      target="_blank">
+      North Carolina State Climate Office
+      </a>
+    </p>
+
+    <p>
+      Locations are approximate map positions representing
+      the named observation areas, not exact weather-station
+      coordinates. Rainfall totals include the storm and
+      preceding rainfall during the three-day period.
+    </p>
+
+    <p><strong>Map created by:</strong> Victoria Burleson</p>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // Initialize map centered on western North Carolina
+    const map = L.map('map').setView([35.75, -82.45], 8);
+
+    // CartoDB Positron basemap from Leaflet Providers Demo
+    
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors',
+  maxZoom: 19
+}).addTo(map);
+
+
+    // Calculate circle radius proportional to square root
+    // so circle AREA represents the rainfall value
+    function getRadius(rainfall) {
+      return Math.sqrt(rainfall) * 4.2;
+    }
+
+    // Load the external GeoJSON data
+    fetch('assets/rainfall.geojson')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Could not load GeoJSON');
+        }
+        return response.json();
+      })
+      .then(data => {
+        const rainfallLayer = L.geoJSON(data, {
+          pointToLayer: function(feature, latlng) {
+            const rainfall = feature.properties.rainfall;
+
+            return L.circleMarker(latlng, {
+              radius: getRadius(rainfall),
+              fillColor: '#287c98',
+              color: '#16546c',
+              weight: 1.5,
+              opacity: 1,
+              fillOpacity: 0.65
+            });
+          },
+
+          onEachFeature: function(feature, layer) {
+            const p = feature.properties;
+
+            layer.bindPopup(
+              '<strong>' + p.location + '</strong><br>' +
+              'County: ' + p.county + '<br>' +
+              'Three-day rainfall: <strong>' +
+              p.rainfall.toFixed(2) + ' inches</strong>'
+            );
+
+            layer.on('mouseover', function() {
+              this.setStyle({
+                fillColor: '#e69b54',
+                fillOpacity: 0.9,
+                weight: 2.5
+              });
+              this.bringToFront();
+            });
+
+            layer.on('mouseout', function() {
+              this.setStyle({
+                fillColor: '#287c98',
+                fillOpacity: 0.65,
+                weight: 1.5
+              });
+            });
+          }
+        }).addTo(map);
+
+        map.fitBounds(rainfallLayer.getBounds(), {
+          padding: [45, 45]
+        });
+      })
+      .catch(error => {
+        console.error(error);
+        alert('Rainfall data could not load. Check the GeoJSON file.');
+      });
+
+    // Proportional circle legend
+    const legend = L.control({ position: 'bottomright' });
+
+    legend.onAdd = function() {
+      const div = L.DomUtil.create('div', 'legend');
+
+      div.innerHTML =
+        '<div class="legend-title">Rainfall (inches)</div>';
+
+      [10, 20, 30].forEach(function(value) {
+        const diameter = getRadius(value) * 2;
+
+        div.innerHTML +=
+          '<div class="legend-row">' +
+          '<span class="legend-circle" style="width:' +
+          diameter + 'px;height:' + diameter + 'px;"></span>' +
+          '<span>' + value + ' inches</span>' +
+          '</div>';
+      });
+
+      return div;
+    };
+
+    legend.addTo(map);
+
+    // Scale bar
+    L.control.scale({
+      imperial: true,
+      metric: false
+    }).addTo(map);
+  </script>
+
+</body>
+</html>

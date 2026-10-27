@@ -1,0 +1,90 @@
+
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "location": "Busick",
+        "county": "Yancey",
+        "rainfall": 31.33
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-82.18, 35.77]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "location": "Mount Mitchell",
+        "county": "Yancey",
+        "rainfall": 24.41
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-82.265, 35.765]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "location": "Bearwallow Mountain",
+        "county": "Henderson",
+        "rainfall": 19.99
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-82.407, 35.46]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "location": "Celo",
+        "county": "Yancey",
+        "rainfall": 19.98
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-82.19, 35.83]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "location": "Sparta",
+        "county": "Alleghany",
+        "rainfall": 17.29
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-81.12, 36.51]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "location": "Laurel Springs",
+        "county": "Ashe",
+        "rainfall": 17.01
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-81.27, 36.41]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "location": "Boone",
+        "county": "Watauga",
+        "rainfall": 16.67
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-81.67, 36.22]
+      }
+    }
+  ]
+}
