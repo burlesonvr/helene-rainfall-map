@@ -5,7 +5,7 @@
 
 This interactive map explores rainfall totals recorded during
 Hurricane Helene and the preceding rain event in western
-North Carolina from September 25-27, 2024.
+North Carolina from September 25th-27th, 2024.
 
 The goal is to show how rainfall varied across selected
 mountain communities during this historic weather event.
